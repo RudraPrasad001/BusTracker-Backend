@@ -1,10 +1,11 @@
 import express from "express";
 import addBus from "./addBus.js";
 import checkAdmin from "./check.js";
+import addDriver from "./addDriver.js";
 const adminRouter = express.Router();
 adminRouter.get("/",checkAdmin);
 adminRouter.post("/add/bus",addBus);
-adminRouter.post("/add/driver",()=>{});
+adminRouter.post("/add/driver",addDriver);
 adminRouter.post("/add/stop",()=>{});
 adminRouter.post("/manage/bus",()=>{});
 export default adminRouter;
