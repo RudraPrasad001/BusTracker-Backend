@@ -1,12 +1,12 @@
 import pool from "../../utils/connectDB.js";
 const manageRoutes = async(req,res)=>{
   const { bus_id, stops } = req.body;
-
+try{
   if (!bus_id || !stops || !Array.isArray(stops)) {
-    return res.status(400).json({ error: "Missing bus_id or stops array" });
+    return res.status(401).json({ success:false,message: "Missing bus_id or stops array" });
   }
 
-    try {
+  
       // Delete old mappings for this bus
       await pool.query("DELETE FROM bus_stops WHERE bus_id = $1", [bus_id]);
 
@@ -31,12 +31,14 @@ const manageRoutes = async(req,res)=>{
 
       await pool.query(insertQuery, values);
 
-      res.json({ message: "Stops assigned to bus successfully." });
+      res.json({ 
+        success:true,
+        message: "Stops assigned to bus successfully." });
 
     } 
    catch (err) {
     console.error(err);
-    res.status(500).json({ error: "Server error" });
+    res.status(500).json({ success:false,message: "Server error" });
   }
 }
 export default manageRoutes;

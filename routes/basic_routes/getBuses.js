@@ -47,7 +47,8 @@ const getBuses = async (req, res) => {
 
       const buses = Object.values(busesMap);
 
-      res.json(buses);
+      res.json({success:true,
+        buses});
 
     }
     catch(e){
