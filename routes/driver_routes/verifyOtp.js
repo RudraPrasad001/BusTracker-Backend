@@ -25,6 +25,7 @@ const verifyOtp = async(req,res)=>{
     }
 
     const data = result.rows[0];
+    await pool.query(`UPDATE drivers SET is_verified=true WHERE phone_number=$1;`,[phone_number.phone_number]);
     const token  = jwt.sign(data,process.env.JWT,{expiresIn:"1d"});
     return res.json({token});
     }
