@@ -17,11 +17,11 @@ const initializeSocket = (server) => {
 
     socket.on("start-tracking", (busId) => {
       socket.join(busId);
-      console.log(`👀 Client ${socket.id} is tracking bus ${busId}`);
+      console.log(`👀 Client ${socket.id} is tracking bus ${busId.bus_number}`);
     });
 
     socket.on("location-update", ({ busId, coords }) => {
-      console.log(`📍 Location for ${busId}:`, coords);
+      console.log(`📍 Location for,` , busId.bus_number,`:`, coords);
       io.to(busId).emit("bus-location", coords);
     });
 
