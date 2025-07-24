@@ -1,8 +1,7 @@
 import pool from "../../utils/connectDB.js";
-
-const getBuses = async (req, res) => {
-  try {
-    const query = `
+const getOnlineBuses = async(req,res)=>{
+    try{
+    const result = await pool.query(`
       SELECT
         b.bus_id,
         b.bus_number,
@@ -17,11 +16,11 @@ const getBuses = async (req, res) => {
       FROM buses b
       LEFT JOIN bus_stops bs ON b.bus_id = bs.bus_id
       LEFT JOIN stops s ON bs.stop_id = s.stop_id
-      ORDER BY b.bus_id, bs.sequence_number;
-    `;
+      WHERE b.is_online=true
+      ORDER BY b.bus_id, bs.sequence_number;`);
 
-    const result = await pool.query(query);
-
+    if(result.rowCount===0) throw new Error("No buses Online");
+    
     const busesMap = {};
 
     result.rows.forEach(row => {
@@ -33,7 +32,7 @@ const getBuses = async (req, res) => {
           is_online:row.is_online,
           bus_number: row.bus_number,
           route_name: row.route_name,
-          number_plate: row.number_plate,  // ✅ add this
+          number_plate: row.number_plate,
           stops: []
         };
       }
@@ -52,13 +51,9 @@ const getBuses = async (req, res) => {
     const buses = Object.values(busesMap);
 
     res.json({ success: true, buses });
-
-  } catch (e) {
-    res.json({
-      success: false,
-      message: "Error fetching the database"
-    });
-  }
-};
-
-export default getBuses;
+    }
+    catch(e){
+        res.json({success:false,message:e.message});
+    }
+}
+export default getOnlineBuses;
